@@ -6,7 +6,6 @@ import opt.OptimizationAlgorithm;
 import opt.RandomizedHillClimbing;
 import opt.SimulatedAnnealing;
 import opt.example.NeuralNetworkOptimizationProblem;
-import opt.ga.StandardGeneticAlgorithm;
 import shared.DataSet;
 import shared.ErrorMeasure;
 import shared.Instance;
@@ -26,11 +25,12 @@ import java.util.Scanner;
  * @author Hannah Lau
  * @version 1.0
  */
-public class CoverTypeTest {
+public class LetterTest {
 
     private static Instance[] instances = initializeInstances();
 
-    private static int inputLayer = 15120, hiddenLayer = 1, outputLayer = 1, trainingIterations = 2;
+    public static final int instances_count = 20000;
+    private static int inputLayer = instances_count, hiddenLayer = 1, outputLayer = 1, trainingIterations = 1;
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
     private static ErrorMeasure measure = new SumOfSquaresError();
@@ -48,6 +48,7 @@ public class CoverTypeTest {
     private static String results = "";
 
     private static DecimalFormat df = new DecimalFormat("0.000");
+    private static int features;
 
     public static void main(String[] args) {
         for(int i = 0; i < oa.length; i++) {
@@ -79,7 +80,7 @@ public class CoverTypeTest {
                 predicted = Double.parseDouble(instances[j].getLabel().toString());
                 actual = Double.parseDouble(networks[i].getOutputValues().toString());
 
-                double trash = Math.abs(predicted - actual) < 0.5 ? correct++ : incorrect++;
+                double trash = Math.abs(predicted - actual) < 1.0 ? correct++ : incorrect++;
 
             }
             end = System.nanoTime();
@@ -118,20 +119,21 @@ public class CoverTypeTest {
 
     private static Instance[] initializeInstances() {
 
-        double[][][] attributes = new double[15120][][];
+        double[][][] attributes = new double[instances_count][][];
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("src/opt/test/covertype.txt")));
+            BufferedReader br = new BufferedReader(new FileReader(new File("src/opt/test/letters.csv")));
 
             for(int i = 0; i < attributes.length; i++) {
                 Scanner scan = new Scanner(br.readLine());
                 scan.useDelimiter(",");
 
                 attributes[i] = new double[2][];
-                attributes[i][0] = new double[54]; // 7 attributes
+                features = 16;
+                attributes[i][0] = new double[features]; // 7 attributes
                 attributes[i][1] = new double[1];
 
-                for(int j = 0; j < 54; j++)
+                for(int j = 0; j < features; j++)
                     attributes[i][0][j] = Double.parseDouble(scan.next());
 
                 attributes[i][1][0] = Double.parseDouble(scan.next());
