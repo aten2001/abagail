@@ -22,15 +22,11 @@ import java.text.*;
  * @version 1.0
  */
 public class OpticalTest {
-    public static final int SCALING = 10;
+    public static final int SCALING = 1000;
     private static Instance[] instances = initializeInstances();
-   private static Instance[] instances_test = initializeTestInstances();
+    private static Instance[] instances_test = initializeTestInstances();
 
-    //private static Instance[] instances = initializeInstances("digitsTrain.csv", "digitsTrainLabels.csv");
-   // private static Instance[] instances_test = initializeInstances("digitsTest.csv", "digitsTestLabels.csv");
-
-
-    private static int inputLayer = 64, hiddenLayer =5, outputLayer = 1, trainingIterations = 10;
+    private static int inputLayer = 64, hiddenLayer = 100, outputLayer = 1, trainingIterations = 10;
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
     private static ErrorMeasure measure = new SumOfSquaresError();
@@ -92,10 +88,10 @@ public class OpticalTest {
                 networks[i].setInputValues(instances[j].getData());
                 networks[i].run();
 
-                predicted = Double.parseDouble(instances[j].getLabel().toString());
-                actual = Double.parseDouble(networks[i].getOutputValues().toString());
+                predicted = Double.parseDouble(instances[j].getLabel().toString()) ;
+                actual = Double.parseDouble(networks[i].getOutputValues().toString()) * SCALING;
 
-                double trash = Math.abs(predicted - actual) < 0.5 ? correct++ : incorrect++;
+                double trash = Math.abs(predicted - actual) < 1.0  ? correct++ : incorrect++;
 
             }
             end = System.nanoTime();
@@ -116,9 +112,9 @@ public class OpticalTest {
                 networks[i].run();
 
                 predicted = Double.parseDouble(instances_test[j].getLabel().toString());
-                actual = Double.parseDouble(networks[i].getOutputValues().toString());
+                actual = Double.parseDouble(networks[i].getOutputValues().toString()) * SCALING;
 
-                double trash = Math.abs(predicted - actual) < 0.5 ? correct++ : incorrect++;
+                double trash = Math.abs(predicted - actual) < 1.0 ? correct++ : incorrect++;
 
             }
             end = System.nanoTime();
@@ -177,7 +173,7 @@ public class OpticalTest {
                 for(int j = 0; j < 64; j++)
                     attributes[i][0][j] = Double.parseDouble(scan.next()) / SCALING;
 
-                attributes[i][1][0] = Double.parseDouble(scan.next()) / SCALING;
+                attributes[i][1][0] = Double.parseDouble(scan.next());
             }
         }
         catch(Exception e) {
@@ -217,7 +213,7 @@ public class OpticalTest {
                 for(int j = 0; j < 64; j++)
                     attributes[i][0][j] = Double.parseDouble(scan.next()) / SCALING;
 
-                attributes[i][1][0] = Double.parseDouble(scan.next()) / SCALING;
+                attributes[i][1][0] = Double.parseDouble(scan.next());
             }
         }
         catch(Exception e) {
