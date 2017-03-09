@@ -29,18 +29,22 @@ import java.util.Scanner;
 public class CoverTypeTest {
     private static Instance[] instances = initializeInstances();
 
-    private static int inputLayer = 4436, hiddenLayer = 5, outputLayer = 1, trainingIterations = 100;
+    private static int inputLayer = 15000, hiddenLayer = 5, outputLayer = 1, trainingIterations = 1000, optIterations = 1000;
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
     private static ErrorMeasure measure = new SumOfSquaresError();
 
     private static DataSet set = new DataSet(instances);
 
-    private static BackPropagationNetwork networks[] = new BackPropagationNetwork[3];
-    private static NeuralNetworkOptimizationProblem[] nnop = new NeuralNetworkOptimizationProblem[3];
+    static final int PROBLEMS = 2;
 
-    private static OptimizationAlgorithm[] oa = new OptimizationAlgorithm[3];
-    private static String[] oaNames = {"RHC", "SA", "GA"};
+    private static BackPropagationNetwork networks[] = new BackPropagationNetwork[PROBLEMS];
+    private static NeuralNetworkOptimizationProblem[] nnop = new NeuralNetworkOptimizationProblem[PROBLEMS];
+
+    private static OptimizationAlgorithm[] oa = new OptimizationAlgorithm[PROBLEMS];
+    // private static String[] oaNames = {"RHC", "SA", "GA"};
+    private static String[] oaNames = {"RHC", "SA"};
+
     private static String results = "";
 
     private static DecimalFormat df = new DecimalFormat("0.000");
@@ -54,7 +58,7 @@ public class CoverTypeTest {
 
         oa[0] = new RandomizedHillClimbing(nnop[0]);
         oa[1] = new SimulatedAnnealing(1E11, .95, nnop[1]);
-        oa[2] = new StandardGeneticAlgorithm(200, 100, 10, nnop[2]);
+        // oa[2] = new StandardGeneticAlgorithm(200, 100, 10, nnop[2]);
 
         for(int i = 0; i < oa.length; i++) {
             double start = System.nanoTime(), end, trainingTime, testingTime, correct = 0, incorrect = 0;
@@ -73,10 +77,19 @@ public class CoverTypeTest {
                 networks[i].run();
 
                 predicted = Double.parseDouble(instances[j].getLabel().toString());
-                actual = Double.parseDouble(networks[i].getOutputValues().toString());
+                actual =  Double.parseDouble(networks[i].getOutputValues().toString());
 
-                double trash = Math.abs(predicted - actual) < 0.5 ? correct++ : incorrect++;
+                //System.out.println("Predicted:" + predicted);
+                //System.out.println("Actual:" + predicted);
 
+                double trash = Math.abs(predicted - actual) < 0.45 ? correct++ : incorrect++;
+
+                /*if (predicted != actual) {
+                    System.out.println("diff: " + (predicted - actual));
+                    System.out.println("Predicted:" + predicted);
+                    System.out.println("Actual:" + actual);
+                }
+                */
             }
             end = System.nanoTime();
             testingTime = end - start;
@@ -94,8 +107,12 @@ public class CoverTypeTest {
     private static void train(OptimizationAlgorithm oa, BackPropagationNetwork network, String oaName) {
         System.out.println("\nError results for " + oaName + "\n---------------------------");
 
-        for(int i = 0; i < trainingIterations; i++) {
+        for (int i = 0; i < optIterations; i++) {
             oa.train();
+        }
+
+
+        for(int i = 0; i < trainingIterations; i++) {
 
             double error = 0;
             for(int j = 0; j < instances.length; j++) {
@@ -113,10 +130,10 @@ public class CoverTypeTest {
 
     private static Instance[] initializeInstances() {
 
-        double[][][] attributes = new double[4436][][];
+        double[][][] attributes = new double[15120][][];
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("src/opt/test/covertype2.txt")));
+            BufferedReader br = new BufferedReader(new FileReader(new File("src/opt/test/transformed.csv")));
 
             for(int i = 0; i < attributes.length; i++) {
                 Scanner scan = new Scanner(br.readLine());
