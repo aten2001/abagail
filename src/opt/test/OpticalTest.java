@@ -21,7 +21,7 @@ import java.text.*;
  * @author Hannah Lau
  * @version 1.0
  */
-public class AbaloneTest {
+public class OpticalTest {
    private static Instance[] instances = initializeInstances();
    private static Instance[] instances_test = initializeTestInstances();
 

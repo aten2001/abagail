@@ -19,6 +19,11 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 /**
+ *
+ * Example of digits. Gives about 40 % accuracy. Suspect dataset
+ *
+ * Credits:
+ *
  * Implementation of randomized hill climbing, simulated annealing, and genetic algorithm to
  * find optimal weights to a neural network that is classifying credit applications as either
  * success or failure.
