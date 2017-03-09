@@ -22,14 +22,15 @@ import java.text.*;
  * @version 1.0
  */
 public class OpticalTest {
-   private static Instance[] instances = initializeInstances();
+    public static final int SCALING = 10;
+    private static Instance[] instances = initializeInstances();
    private static Instance[] instances_test = initializeTestInstances();
 
     //private static Instance[] instances = initializeInstances("digitsTrain.csv", "digitsTrainLabels.csv");
    // private static Instance[] instances_test = initializeInstances("digitsTest.csv", "digitsTestLabels.csv");
 
 
-    private static int inputLayer = 64, hiddenLayer = 10, outputLayer = 1, trainingIterations = 100;
+    private static int inputLayer = 64, hiddenLayer =5, outputLayer = 1, trainingIterations = 10;
     private static BackPropagationNetworkFactory factory = new BackPropagationNetworkFactory();
     
     private static ErrorMeasure measure = new SumOfSquaresError();
@@ -174,9 +175,9 @@ public class OpticalTest {
                 attributes[i][1] = new double[1];
 
                 for(int j = 0; j < 64; j++)
-                    attributes[i][0][j] = Double.parseDouble(scan.next());
+                    attributes[i][0][j] = Double.parseDouble(scan.next()) / SCALING;
 
-                attributes[i][1][0] = Double.parseDouble(scan.next());
+                attributes[i][1][0] = Double.parseDouble(scan.next()) / SCALING;
             }
         }
         catch(Exception e) {
@@ -214,9 +215,9 @@ public class OpticalTest {
                 attributes[i][1] = new double[1];
 
                 for(int j = 0; j < 64; j++)
-                    attributes[i][0][j] = Double.parseDouble(scan.next());
+                    attributes[i][0][j] = Double.parseDouble(scan.next()) / SCALING;
 
-                attributes[i][1][0] = Double.parseDouble(scan.next());
+                attributes[i][1][0] = Double.parseDouble(scan.next()) / SCALING;
             }
         }
         catch(Exception e) {
@@ -236,29 +237,6 @@ public class OpticalTest {
         return instances;
     }
 
-    // TODO perhaps use this because of the 7 thing above
 
-    private static Instance[] initializeInstances(String dataFile, String labelFile) {
-        DataSetReader dsr = new CSVDataSetReader(new File("").getAbsolutePath() + "/data/" + dataFile);
-        DataSetReader lsr = new CSVDataSetReader(new File("").getAbsolutePath() + "/data/" + labelFile);
-        DataSet ds;
-        DataSet labs;
-
-        try {
-            ds = dsr.read();
-            labs = lsr.read();
-            Instance[] instances = ds.getInstances();
-            Instance[] labels = labs.getInstances();
-
-            for(int i = 0; i < instances.length; i++) {
-                instances[i].setLabel(new Instance(labels[i].getData()));
-            }
-
-            return instances;
-        } catch (Exception e) {
-            System.out.println("Failed to read input file");
-            return null;
-        }
-    }
 
 }
